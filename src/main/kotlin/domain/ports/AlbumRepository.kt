@@ -1,8 +1,8 @@
-package domain.interfaces
+package domain.ports
 
 import com.emiliagomez.domain.models.Album
 
-interface AlbumInterface {
+interface AlbumRepository {
 
     suspend fun createAlbum(album: Album): Album
     suspend fun getAllAlbums(): List<Album>

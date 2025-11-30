@@ -1,8 +1,8 @@
-package domain.interfaces
+package domain.ports
 
 import com.emiliagomez.domain.models.Track
 
-interface TracksInterface {
+interface TracksRepository {
     suspend fun createTrack(track: Track): Track
     suspend fun getAllTracks(): List<Track>
     suspend fun getTrackById(id: String): Track

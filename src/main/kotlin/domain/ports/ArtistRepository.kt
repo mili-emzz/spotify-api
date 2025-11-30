@@ -1,8 +1,8 @@
-package domain.interfaces
+package domain.ports
 
 import com.emiliagomez.domain.models.Artist
 
-interface ArtistInterface {
+interface ArtistRepository {
     suspend fun createArtist(artist: Artist): Artist
     suspend fun getAllArtists(): List<Artist>
     suspend fun getArtistById(id: String): Artist

@@ -1,0 +1,37 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '2.2.20'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.2.20'
+    id 'io.ktor.plugin' version '3.3.2'
+}
+
+group "com.emiliagomez"
+version "0.0.1"
+
+def exposed_version = project.property("exposed_version")
+def h2_version = project.property("h2_version")
+def kotlin_version = project.property("kotlin_version")
+def logback_version = project.property("logback_version")
+def postgres_version = project.property("postgres_version")
+
+application {
+    mainClass = "io.ktor.server.netty.EngineMain"
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "io.ktor:ktor-server-core"
+    implementation "io.ktor:ktor-server-content-negotiation"
+    implementation "io.ktor:ktor-serialization-kotlinx-json"
+    implementation "org.postgresql:postgresql:$postgres_version"
+    implementation "com.h2database:h2:$h2_version"
+    implementation "io.ktor:ktor-server-host-common"
+    implementation "org.jetbrains.exposed:exposed-core:$exposed_version"
+    implementation "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
+    implementation "io.ktor:ktor-server-netty"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation "io.ktor:ktor-server-config-yaml"
+    testImplementation "io.ktor:ktor-server-test-host"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+}

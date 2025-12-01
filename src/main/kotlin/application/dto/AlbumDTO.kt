@@ -10,29 +10,37 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonPrimitive
 
+object StringOrNumberSerializer : KSerializer<String> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("StringOrNumber", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: String) {
+        encoder.encodeString(value)
+    }
+
+    override fun deserialize(decoder: Decoder): String {
+        return try {
+            decoder.decodeString()
+        } catch (e: Exception) {
+            // Si falla como String, intenta como número
+            decoder.decodeDouble().toString()
+        }
+    }
+}
 
 @Serializable
 data class AlbumRequest(
     val title: String,
     val releaseYear: Int,
+    @Serializable(with = StringOrNumberSerializer::class)
     val artistId: String
-) {
-    init {
-        require(title.isNotBlank()) { "El título no puede estar vacío" }
-        require(releaseYear in 1900..2100) { "Año inválido: $releaseYear" }
-    }
-}
+)
 
 @Serializable
 data class UpdateAlbumRequest(
     val title: String?,
     val releaseYear: Int?
-) {
-    init {
-        title?.let { require(it.isNotBlank()) { "El título no puede estar vacío" } }
-        releaseYear?.let { require(it in 1900..2100) { "Año inválido: $it" } }
-    }
-}
+)
 
 @Serializable
 data class AlbumResponse(

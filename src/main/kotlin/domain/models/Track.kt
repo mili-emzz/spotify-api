@@ -1,13 +1,18 @@
 package com.emiliagomez.domain.models
 
-import java.time.OffsetDateTime
+import java.time.Instant
 import java.util.UUID
 
-class Track(
+data class Track(
     val id: UUID,
     val albumId: UUID,
-    val title : String,
+    val title: String,
     val duration: Int,
-    val createdAt: OffsetDateTime?,
-    val updatedAt: OffsetDateTime?
-)
+    val createdAt: Instant,
+    val updatedAt: Instant
+){
+    init{
+        require(duration > 0) { "La duración no puede ser 0" }
+        require(title.isNotBlank()) { "El titulo no puede estar vacío" }
+    }
+}

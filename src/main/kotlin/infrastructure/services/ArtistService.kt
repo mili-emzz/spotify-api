@@ -1,7 +1,10 @@
 package infrastructure.services
 
 import DatabaseFactory.dbQuery
+import com.emiliagomez.domain.models.Album
 import com.emiliagomez.domain.models.Artist
+import domain.exceptions.AlbumNotFoundException
+import domain.exceptions.ArtistNotFoundException
 import domain.ports.ArtistRepository
 import infrastructure.database.tables.ArtistTable
 import org.jetbrains.exposed.sql.*
@@ -20,20 +23,24 @@ class ArtistService : ArtistRepository {
     )
 
     override suspend fun createArtist(artist: Artist): Artist = dbQuery {
-        val now = Instant.now()
+        try {
+            val now = Instant.now()
 
-        ArtistTable.insert {
-            it[id] = artist.id
-            it[name] = artist.name
-            it[genre] = artist.genre
-            it[createdAt] = now
-            it[updatedAt] = now
+            ArtistTable.insert {
+                it[id] = artist.id
+                it[name] = artist.name
+                it[genre] = artist.genre
+                it[createdAt] = now
+                it[updatedAt] = now
+            }
+
+            artist.copy(
+                createdAt = now,
+                updatedAt = now
+            )
+        } catch (e: Exception) {
+            throw e
         }
-
-        artist.copy(
-            createdAt = now,
-            updatedAt = now
-        )
     }
 
     override suspend fun getAllArtists(): List<Artist> = dbQuery {
@@ -43,37 +50,75 @@ class ArtistService : ArtistRepository {
             .map { it.toArtist() }
     }
 
-    override suspend fun getArtistById(id: UUID): Artist? = dbQuery {
-        ArtistTable
-            .selectAll()
-            .where { ArtistTable.id eq id }
-            .map { it.toArtist() }
-            .singleOrNull()  // Retorna null si no existe, sin excepciones
+    override suspend fun getArtistById(id: String): Artist = dbQuery {
+        try {
+            val uuid = UUID.fromString(id)
+
+            ArtistTable
+                .selectAll()
+                .where { ArtistTable.id eq uuid }
+                .map { it.toArtist() }
+                .singleOrNull()
+        } catch (e: Exception) {
+            throw e
+        } catch (e: NoSuchElementException) {
+            throw ArtistNotFoundException("Artista no encontrado: $id")
+        }
+        as Artist
     }
 
     override suspend fun updateArtist(
-        id: UUID
+        id: String,
+        artist: Artist
     ): Artist = dbQuery {
-        // Verificar que el artista existe
-        val existing = ArtistTable
-            .selectAll()
-            .where { ArtistTable.id eq id }
-            .map { it.toArtist() }
-            .singleOrNull()
-            ?: throw NoSuchElementException("Artista con id $id no encontrado")
+        try {
+            val uuid = UUID.fromString(id)
 
-        val now = Instant.now()
+            val exists = ArtistTable
+                .selectAll()
+                .where { ArtistTable.id eq uuid }
+                .singleOrNull()
+                ?: throw NoSuchElementException("Artista no encontrado: $id")
 
-        ArtistTable.update({ ArtistTable.id eq id }) {
-            it[updatedAt] = now
+            val now = Instant.now()
+
+            ArtistTable.update({ ArtistTable.id eq uuid }) {
+                artist.name.let { name -> it[ArtistTable.name] = name }
+                it[genre] = artist.genre
+                it[updatedAt] = now
+            }
+
+            ArtistTable
+                .selectAll()
+                .where { ArtistTable.id eq uuid }
+                .map { it.toArtist() }
+                .single()
+
+
+        } catch (e: IllegalArgumentException) {
+            throw ArtistNotFoundException("ID inválaido")
+        } catch (e: Exception) {
+            throw e
         }
-        existing.copy(
-            updatedAt = now
-        )
     }
 
-    override suspend fun deleteArtist(id: UUID): Boolean = dbQuery {
-        val deletedCount = ArtistTable.deleteWhere { ArtistTable.id eq id }
-        deletedCount > 0
+    override suspend fun deleteArtist(id: String): Boolean = dbQuery {
+        try {
+            val uuid = UUID.fromString(id)
+
+            // Verificar que el artista existe
+            ArtistTable
+                .selectAll()
+                .where { ArtistTable.id eq uuid}
+                .singleOrNull()
+                ?: throw NoSuchElementException("Artista no encontrado: $id")
+
+            val deletedRows = ArtistTable.deleteWhere { ArtistTable.id eq uuid }
+            deletedRows > 0
+        } catch (e: Exception) {
+            throw e
+        } catch (e: IllegalArgumentException){
+            throw ArtistNotFoundException("ID NO VÁLIDO O NO EXISTE")
+        }
     }
 }

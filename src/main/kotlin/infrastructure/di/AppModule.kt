@@ -1,5 +1,10 @@
 package configuration.di
 
+import application.usecases.albumUseCase.DeleteAlbumUseCase
+import application.usecases.albumUseCase.GetAlbumById
+import application.usecases.albumUseCase.GetAlbumsByArtist
+import application.usecases.albumUseCase.GetAllAlbums
+import application.usecases.albumUseCase.UpdateAlbum
 import application.usescases.albumUseCase.*
 import application.usescases.artistUseCase.*
 import application.usescases.trackUseCase.*
@@ -23,5 +28,12 @@ class AppModule {
     val updateArtistUseCase = UpdateArtist(artistRepository)
     val deleteArtistUseCase = DeleteArtistUseCase(artistRepository)
 
+    // ALBUMS USE CASES
+    val createAlbumUseCase = CreateAlbumUseCase(albumRepository, artistRepository)
+    val getAllAlbumsUseCase = GetAllAlbums(albumRepository, artistRepository)
+    val getAlbumByIdUseCase = GetAlbumById(albumRepository, artistRepository)
+    val getAlbumsByArtistUseCase = GetAlbumsByArtist(albumRepository, artistRepository)
+    val updateAlbumUseCase = UpdateAlbum(albumRepository, artistRepository)
+    val deleteAlbumUseCase = DeleteAlbumUseCase(albumRepository)
 
 }

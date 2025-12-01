@@ -2,6 +2,7 @@ package application.usescases.artistUseCase
 
 import application.dto.ArtistResponse
 import application.dto.UpdateArtistRequest
+import com.emiliagomez.domain.models.Artist
 import domain.exceptions.ArtistNotFoundException
 import domain.ports.ArtistRepository
 import java.util.UUID
@@ -10,19 +11,19 @@ class UpdateArtist(
     private val artistRepository: ArtistRepository
 ) {
     suspend fun execute(id: String, request: UpdateArtistRequest): ArtistResponse {
-        val uuid = try {
-            UUID.fromString(id)
-        } catch (e: IllegalArgumentException) {
-            throw ArtistNotFoundException("ID inválido: $id") as Throwable
-        } catch (e: Exception) {
-            throw e
-        }
 
-        val updatedArtist = try {
-            artistRepository.updateArtist(uuid)
-        } catch (e: NoSuchElementException) {
-            throw ArtistNotFoundException("Artista no encontrado con id: $id")
-        }
+        val currentArtist = artistRepository.getArtistById(id)
+
+        val updatedArtist = Artist(
+            id = currentArtist.id,
+            name = request.name ?: currentArtist.name,
+            genre = request.genre ?: currentArtist.genre,
+            createdAt = currentArtist.createdAt,
+            updatedAt = currentArtist.updatedAt
+        )
+
+        val artist = artistRepository.updateArtist(id, updatedArtist)
+
 
         return ArtistResponse(
             id = updatedArtist.id.toString(),

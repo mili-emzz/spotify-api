@@ -6,20 +6,14 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import routes.albumRoutes
 import routes.artistRoutes
+import routes.trackRoutes
 
-fun Application.configureRouting() {
-
-    val appModule = AppModule()
+fun Application.configureRouting(appModule: AppModule) {
     routing {
-        get("/") {
-            call.respondText("NICE! NICE! Very nice")
+        route("/api") {
+            artistRoutes(appModule)
+            albumRoutes(appModule)
+            trackRoutes(appModule)
         }
-
-        get("/health"){
-            call.respondText("OK")
-        }
-
-        artistRoutes(appModule)
-        albumRoutes(appModule)
     }
 }

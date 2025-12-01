@@ -65,9 +65,8 @@ class TrackService: TracksRepository {
             .map { it.toTrack() }
     }
 
-    override suspend fun getTrackById(id: String): Track? = dbQuery{
+    override suspend fun getTrackById(id: String): Track = dbQuery {
         try {
-
             val uuid = UUID.fromString(id)
 
             TrackTable
@@ -75,6 +74,9 @@ class TrackService: TracksRepository {
                 .where { TrackTable.id eq uuid }
                 .map { it.toTrack() }
                 .singleOrNull()
+                ?: throw NoSuchElementException("Track no encontrado: $id")
+        } catch (e: IllegalArgumentException) {
+            throw TrackNotFoundException("ID inválido: $id no es un UUID válido")
         } catch (e: Exception) {
             throw e
         }

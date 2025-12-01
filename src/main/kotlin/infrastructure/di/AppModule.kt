@@ -5,6 +5,11 @@ import application.usecases.albumUseCase.GetAlbumById
 import application.usecases.albumUseCase.GetAlbumsByArtist
 import application.usecases.albumUseCase.GetAllAlbums
 import application.usecases.albumUseCase.UpdateAlbum
+import application.usecases.trackUseCase.CreateTrackUseCase
+import application.usecases.trackUseCase.DeleteTrackUseCase
+import application.usecases.trackUseCase.GetAllTracks
+import application.usecases.trackUseCase.GetTrackBy
+import application.usecases.trackUseCase.UpdateTrack
 import application.usescases.albumUseCase.*
 import application.usescases.artistUseCase.*
 import application.usescases.trackUseCase.*
@@ -36,4 +41,32 @@ class AppModule {
     val updateAlbumUseCase = UpdateAlbum(albumRepository, artistRepository)
     val deleteAlbumUseCase = DeleteAlbumUseCase(albumRepository)
 
+    //TRACK USE CASES
+
+    val createTrackUseCase = CreateTrackUseCase(
+        trackRepository = trackRepository,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository
+    )
+    val getAllTracksUseCase = GetAllTracks(
+        trackRepository = trackRepository,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository
+    )
+    val getTrackByIdUseCase = GetTrackBy(
+        trackRepository = trackRepository,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository
+    )
+    val getTracksByAlbumUseCase = GetTrackBy(
+        trackRepository = trackRepository,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository
+    )
+    val updateTrackUseCase = UpdateTrack(
+        trackRepository = trackRepository,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository
+    )
+    val deleteTrackUseCase = DeleteTrackUseCase(trackRepository)
 }

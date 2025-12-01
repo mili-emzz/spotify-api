@@ -7,8 +7,8 @@ data class Artist(
     val id: UUID,
     val name: String,
     val genre: String,
-    val createdAt: Instant,
-    val updatedAt: Instant
+    val createdAt: Instant?,
+    val updatedAt: Instant?
 ){
     init {
         require(name.isNotBlank()) { "El nombre del artista no puede estar vacío" }

@@ -44,7 +44,21 @@ dependencies {
     implementation "org.postgresql:postgresql:42.7.3" // <--- Usa el driver apropiado para tu DB
 
     implementation 'com.zaxxer:HikariCP:5.1.0' // <-- Usa la versión actual
-// Dependencia para kotlin-dotenv
+    // Dependencia para kotlin-dotenv
     def dotenv_version = "6.4.1" // <-- Usa la versión actual
     implementation "io.github.cdimascio:dotenv-kotlin:$dotenv_version"
+
+    def ktor_version = "3.3.2" // <-- Asegúrate de usar tu versión de Ktor
+
+    // 1. Dependencia principal del plugin de métricas de Ktor
+    implementation "io.ktor:ktor-server-metrics:$ktor_version"
+
+    // 2. Dependencia del motor de métricas (Recomendado: Micrometer)
+    implementation "io.ktor:ktor-server-metrics-micrometer:$ktor_version"
+
+    // 3. Dependencia del registro de Micrometer (Ej: Prometheus, la más común)
+    implementation "io.micrometer:micrometer-registry-prometheus:1.12.2"
+    // Añadir la dependencia del plugin CallLogging
+    implementation "io.ktor:ktor-server-call-logging:$ktor_version"
+
 }

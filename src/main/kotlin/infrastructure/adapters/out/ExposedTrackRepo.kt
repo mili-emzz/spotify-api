@@ -1,4 +1,4 @@
-package infrastructure.services
+package infrastructure.adapters.out
 
 import DatabaseFactory.dbQuery
 import com.emiliagomez.domain.models.Track
@@ -16,7 +16,7 @@ import org.jetbrains.exposed.sql.update
 import java.time.Instant
 import java.util.UUID
 
-class TrackService: TracksRepository {
+class ExposedTrackRepo: TracksRepository {
 
     private fun ResultRow.toTrack() = Track (
         id = this[TrackTable.id],

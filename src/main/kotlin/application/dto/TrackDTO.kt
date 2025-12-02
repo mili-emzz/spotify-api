@@ -13,7 +13,7 @@ data class TrackRequest(
 
 @Serializable
 data class UpdateTrackRequest(
-    val title: String?,
+    val title: String,
     val duration: Int?
 )
 

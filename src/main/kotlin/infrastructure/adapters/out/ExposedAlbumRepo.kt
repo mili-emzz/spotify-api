@@ -1,4 +1,4 @@
-package infrastructure.services
+package infrastructure.adapters.out
 
 import DatabaseFactory.dbQuery
 import com.emiliagomez.domain.models.Album
@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.time.Instant
 import java.util.UUID
 
-class AlbumService : AlbumRepository {
+class ExposedAlbumRepo : AlbumRepository {
 
     private fun ResultRow.toAlbum() = Album(
         id = this[AlbumTable.id],
@@ -60,20 +60,18 @@ class AlbumService : AlbumRepository {
             .map { it.toAlbum() }
     }
 
-    override suspend fun getAlbumById(id: String): Album? = dbQuery {
+    override suspend fun getAlbumById(id: String): Album = dbQuery {
         try {
-
-            val uuid = UUID.fromString(id)
-
             AlbumTable
                 .selectAll()
-                .where { AlbumTable.id eq uuid }
+                .where { AlbumTable.id eq UUID.fromString(id) }
                 .map { it.toAlbum() }
                 .singleOrNull()
+                ?: throw NoSuchElementException("Álbum no encontrado: $id")
+        } catch (e: IllegalArgumentException) {
+            throw IllegalArgumentException("ID inválido: $id no es un UUID válido")
         } catch (e: Exception) {
             throw e
-        } catch(e: IllegalArgumentException){
-            throw AlbumNotFoundException("Id inválido: $id no es UUID")
         }
     }
 

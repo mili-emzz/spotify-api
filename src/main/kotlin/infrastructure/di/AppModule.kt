@@ -9,22 +9,21 @@ import application.usecases.trackUseCase.CreateTrackUseCase
 import application.usecases.trackUseCase.DeleteTrackUseCase
 import application.usecases.trackUseCase.GetAllTracks
 import application.usecases.trackUseCase.GetTrackBy
-import application.usecases.trackUseCase.UpdateTrack
+import application.usecases.trackUseCase.*
 import application.usescases.albumUseCase.*
 import application.usescases.artistUseCase.*
-import application.usescases.trackUseCase.*
 import domain.ports.AlbumRepository
 import domain.ports.ArtistRepository
 import domain.ports.TracksRepository
-import infrastructure.services.AlbumService
-import infrastructure.services.ArtistService
-import infrastructure.services.TrackService
+import infrastructure.adapters.out.ExposedAlbumRepo
+import infrastructure.adapters.out.ExposedArtistRepi
+import infrastructure.adapters.out.ExposedTrackRepo
 
 class AppModule {
 
-    val artistRepository: ArtistRepository = ArtistService()
-    val albumRepository: AlbumRepository = AlbumService()
-    val trackRepository: TracksRepository = TrackService()
+    val artistRepository: ArtistRepository = ExposedArtistRepi()
+    val albumRepository: AlbumRepository = ExposedAlbumRepo()
+    val trackRepository: TracksRepository = ExposedTrackRepo()
 
     // ARTIST USE CASES
     val createArtistUseCase = CreateArtistUseCase(artistRepository)

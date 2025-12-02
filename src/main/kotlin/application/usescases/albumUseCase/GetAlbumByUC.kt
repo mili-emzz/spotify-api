@@ -2,6 +2,7 @@ package application.usecases.albumUseCase
 
 import application.dto.AlbumResponse
 import domain.exceptions.AlbumNotFoundException
+import domain.exceptions.ArtistNotFoundException
 import domain.ports.AlbumRepository
 import domain.ports.ArtistRepository
 import java.util.UUID
@@ -15,7 +16,8 @@ class GetAlbumById(
         val album = albumRepository.getAlbumById(id)
             ?: throw AlbumNotFoundException("Álbum no encontrado con id: $id")
 
-        val artist = artistRepository.getArtistById(id)
+        val artist = artistRepository.getArtistById(album.artistId.toString())
+            ?: throw ArtistNotFoundException("Artista asociado al álbum no encontrado.")
 
         return AlbumResponse(
             id = album.id.toString(),

@@ -1,9 +1,7 @@
-package infrastructure.services
+package infrastructure.adapters.out
 
 import DatabaseFactory.dbQuery
-import com.emiliagomez.domain.models.Album
 import com.emiliagomez.domain.models.Artist
-import domain.exceptions.AlbumNotFoundException
 import domain.exceptions.ArtistNotFoundException
 import domain.ports.ArtistRepository
 import infrastructure.database.tables.ArtistTable
@@ -12,7 +10,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.time.Instant
 import java.util.UUID
 
-class ArtistService : ArtistRepository {
+class ExposedArtistRepi : ArtistRepository {
 
     private fun ResultRow.toArtist() = Artist(
         id = this[ArtistTable.id],
